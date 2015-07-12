@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>      
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"      
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+     <mapper namespace="org.snow.cms.model.KeyWord">
+     	
+     	<resultMap type="KeyWord" id="keywordMap" autoMapping="true">
+     		<id property="id" column="id"/>
+     		<result property="name" column="name"/>
+     		<result property="times" column="times"/>
+     		<result property="nameFullPy" column="name_full_py"/>
+     		<result property="nameShortPy" column="name_short_py"/>
+     	</resultMap>
+     	
+     	<insert id="add" parameterType="KeyWord" useGeneratedKeys="true" keyProperty="id">
+     		insert into t_keyword (name, times, name_full_py, name_short_py)
+     			values (#{name}, #{times}, #{nameFullPy}, #{nameShortPy})
+     	</insert>
+     	<update id="update" parameterType="KeyWord">
+     		update t_keyword set name=#{name}, times=#{times}, name_full_py=#{nameFullPy}, name_short_py=#{nameShortPy} where id=#{id}
+     	</update>
+     	<delete id="delete" parameterType="int">
+     		delete from t_keyword where id=#{id}
+     	</delete>
+     	<select id="load" parameterType="int" resultMap="keywordMap">
+     		select k.id, k.name, k.times, k.name_full_py, k.name_short_py from t_keyword k where k.id=#{id}
+     	</select>
+     	
+     	<select id="find" parameterType="map" resultMap="keywordMap">
+     		select k.id, k.name, k.times, k.name_full_py, k.name_short_py from t_keyword k where 1=1
+     		<if test="sort!=null">
+     			 order by ${sort}
+     			 <if test="order!=null">
+     			 	${order}
+     			 </if>
+     		</if>
+     		 limit #{pageOffset},#{pageSize}
+     	</select>
+     	<select id="find_count" parameterType="map" resultType="long">
+     		select count(*) from t_keyword k where 1=1
+     	</select>
+     	
+     	<select id="search_keyword_by_name" parameterType="string" resultMap="keywordMap">
+     		select k.id, k.name, k.name_full_py, k.name_short_py, k.times FROM t_keyword k where k.name=#{name}
+     	</select>
+     	
+     	<select id="search_keyword_from_topic" resultType="string">
+     		SELECT t.keyword FROM t_topic t
+     	</select>
+     	
+     	<select id="find_no_use_keyword" parameterType="map" resultMap="keywordMap">
+     		SELECT k.id, k.name, k.times, k.name_full_py, k.name_short_py FROM t_keyword k WHERE k.name NOT IN (SELECT t.keyword FROM t_topic t)
+     		<if test="sort!=null">
+     			 order by ${sort}
+     			 <if test="order!=null">
+     			 	${order}
+     			 </if>
+     		</if>
+     		 limit #{pageOffset},#{pageSize}
+     	</select>
+     	<select id="find_no_use_keyword_count" parameterType="map" resultType="long">
+     		SELECT count(*) FROM t_keyword k WHERE k.name NOT IN (SELECT t.keyword FROM t_topic t)
+     	</select>
+     	
+     	<delete id="clear_no_use_keyword">
+     		DELETE FROM t_keyword WHERE name NOT IN (SELECT t.keyword FROM t_topic t)
+     	</delete>
+     	
+     	<select id="list_keyword_by_con" parameterType="map" resultMap="keywordMap">
+     		select k.id, k.name, k.times, k.name_full_py, k.name_short_py from t_keyword k where 1=1
+     		<if test="con!=null">
+     			and k.name like '%${con}%' or k.name_full_py like '%${con}%' or k.name_short_py like '%${con}%'
+     		</if>
+     	</select>
+     	<select id="list_keyword_string_by_con" parameterType="map" resultType="string">
+     		select k.name from t_keyword k where 1=1
+     		<if test="con!=null">
+     			and k.name like '%${con}%' or k.name_full_py like '%${con}%' or k.name_short_py like '%${con}%'
+     		</if>
+     	</select>
+     </mapper>
+ 

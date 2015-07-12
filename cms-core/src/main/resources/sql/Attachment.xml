@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>      
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"      
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+     <mapper namespace="org.snow.cms.model.Attachment">
+     	
+     	<resultMap id="attachmentMap" type="Attachment" autoMapping="true">
+     		<id property="id" column="id"/>
+     		<result property="oldName" column="old_name"/>
+     		<result property="newName" column="new_name"/>
+     		<result property="type" column="type"/>
+     		<result property="suffix" column="suffix"/>
+     		<result property="size" column="size"/>
+     		<result property="isIndexPic" column="is_index_pic"/>
+     		<result property="isImg" column="is_img"/>
+     		<result property="isAttach" column="is_attach"/>
+     		<association property="topic" javaType="Topic">
+     			<id property="id" column="t_id"/>
+     			<result property="title" column="title"/>
+     			<result property="keyword" column="keyword"/>
+     			<result property="status" column="status"/>
+     			<result property="recommend" column="recommend"/>
+     			<result property="content" column="content"/>
+     			<result property="summary" column="summary"/>
+     			<result property="channelPicId" column="channel_pic_id"/>
+     			<result property="author" column="author"/>
+     			<result property="cname" column="cname"/>
+     			<result property="publishDate" column="publish_date"/>
+     			<result property="createDate" column="create_date"/>
+     			<association property="channel" javaType="Channel">
+     				<id property="id" column="c_id"/>
+     				<result property="name" column="name"/>
+	     			<result property="customLink" column="custom_link"/>
+	     			<result property="customLinkUrl" column="custom_link_url"/>
+	     			<result property="type" column="c_type" />
+	     			<result property="isIndex" column="is_index"/>
+	     			<result property="isTopNav" column="is_top_nav"/>
+	     			<result property="recommend" column="recommend"/>
+	     			<result property="status" column="status"/>
+	     			<result property="orders" column="orders"/>
+	     			<association property="parent" javaType="Channel">
+	     				<id property="id" column="pid"/>
+	     				<result property="name" column="name"/>
+		     			<result property="customLink" column="custom_link"/>
+		     			<result property="customLinkUrl" column="custom_link_url"/>
+		     			<result property="type" column="c_type"/>
+		     			<result property="isIndex" column="is_index"/>
+		     			<result property="isTopNav" column="is_top_nav"/>
+		     			<result property="recommend" column="recommend"/>
+		     			<result property="status" column="status"/>
+		     			<result property="orders" column="orders"/>
+	     			</association>
+     			</association>
+     			<association property="user" javaType="User">
+     				<id property="id" column="u_id"/>
+     				<result property="username" column="username" />
+	     			<result property="password" column="password" />
+	     			<result property="nickname" column="nickname" />
+	     			<result property="phone" column="phone" /> 
+	     			<result property="email" column="email"/> 
+	     			<result property="status" column="status"/>
+	     			<result property="createDate" column="create_date"/>  
+     			</association>
+     		</association>
+     	</resultMap>
+     	
+     	<insert id="add" parameterType="Attachment" useGeneratedKeys="true" keyProperty="id">
+     		insert into t_attachment (old_name, new_name, type, suffix, size, is_index_pic, is_img, t_id, is_attach) 
+     			values (#{oldName}, #{newName}, #{type}, #{suffix}, #{size}, #{isIndexPic}, #{isImg}, #{topic.id}, #{isAttach})
+     	</insert>
+     	<update id="update" parameterType="Attachment">
+     		update t_attachment set old_name=#{oldName}, new_name=#{newName}, type=#{type}, suffix=#{suffix}, size=#{size},
+     		is_index_pic=#{isIndexPic}, is_img=#{isImg}, t_id=#{topic.id}, is_attach=#{isAttach} where id=#{id}
+     	</update>
+     	<delete id="delete" parameterType="int">
+     		delete from t_attachment where id=#{id}
+     	</delete>
+     	<select id="load" parameterType="int" resultMap="attachmentMap">
+     		select a.id, a.old_name, a.new_name, a.type, a.suffix, a.size, a.is_index_pic, a.is_img, a.t_id, a.is_attach from t_attachment a
+     		where a.id=#{id}
+     	</select>
+     	
+     	<select id="find_no_use_attach" parameterType="map" resultMap="attachmentMap">
+     		select a.id, a.old_name, a.new_name, a.type, a.suffix, a.size, a.is_index_pic, a.is_img, a.t_id, a.is_attach from t_attachment a
+     		where a.t_id is NULL
+     		<if test="sort!=null">
+     			 order by ${sort}
+     			 <if test="order!=null">
+     			 	${order}
+     			 </if>
+     		</if>
+     		 limit #{pageOffset},#{pageSize}
+     	</select>
+     	<select id="find_no_use_attach_count" parameterType="map" resultType="long">
+     		select count(*) from t_attachment a
+     		where a.t_id is NULL
+     	</select>
+     	<delete id="clear_no_use_attach">
+     		delete from t_attachment where t_id is NULL
+     	</delete>
+     	<delete id="delete_by_topic" parameterType="int">
+     		delete from t_attachment where t_id=#{topicId}
+     	</delete>
+     	<select id="list_by_topic" parameterType="int" resultMap="attachmentMap">
+     		select a.id, a.old_name, a.new_name, a.type, a.suffix, a.size, a.is_index_pic, a.is_img, a.t_id, a.is_attach from t_attachment a
+     		where a.t_id=#{topicId}
+     	</select>
+     	<select id="list_index_pic" parameterType="int" resultMap="attachmentMap">
+     		SELECT a.id, a.old_name, a.new_name, a.type, a.suffix, a.size, a.is_index_pic, a.is_img, a.t_id, a.is_attach FROM t_attachment a, t_topic t
+     		WHERE a.t_id = t.id AND t.status=1 AND a.is_index_pic=#{num}
+     	</select>
+     	
+     	<select id="find_channel_pic" parameterType="map" resultMap="attachmentMap">
+     		SELECT a.id, a.old_name, a.new_name, a.type, a.suffix, a.size, a.is_index_pic, a.is_img, a.t_id, a.is_attach FROM t_attachment a, t_topic t
+     		WHERE a.t_id = t.id AND t.status=1 AND a.id=t.channel_pic_id AND t.c_id=#{channelId}
+     		<if test="sort!=null">
+     			 order by ${sort}
+     			 <if test="order!=null">
+     			 	${order}
+     			 </if>
+     		</if>
+     		 limit #{pageOffset},#{pageSize}
+     	</select>
+     	<select id="find_channel_pic_count" parameterType="map" resultType="long">
+     		SELECT count(*) FROM t_attachment a, t_topic t
+     		WHERE a.t_id = t.id AND t.status=1 AND a.id=t.channel_pic_id AND t.c_id=#{channelId}
+     	</select>
+     	
+     	<select id="list_attach_by_topic" parameterType="int" resultMap="attachmentMap">
+     		SELECT a.id, a.old_name, a.new_name, a.type, a.suffix, a.size, a.is_index_pic, a.is_img, a.t_id, a.is_attach FROM t_attachment a
+     		WHERE a.is_attach=1 AND a.t_id=#{topicId}
+     	</select>
+     </mapper>
+ 

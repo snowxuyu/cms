@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+ 
+ <configuration>
+ 	<typeAliases>
+ 		<!--  <typeAlias type="org.snow.cms.model.User" alias="User"/>	 -->
+ 		<package name="org.snow.cms.model" /> 
+ 	</typeAliases>
+ 	
+ 	<!-- 在spring的配置文件中加入mapperLocations 下面的配置就不需要了
+ 	<mappers>
+ 		<mapper resource="sql/User.xml"/>
+ 	</mappers> 
+ 	 -->
+ </configuration>

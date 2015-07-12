@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>      
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"      
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+     <mapper namespace="org.snow.cms.model.Group">
+     	<resultMap type="Group" id="groupMap">
+     		<id property="id" column="id"/>
+     		<result property="name" column="name"/>
+     		<result property="descr" column="descr" />
+     	</resultMap>
+     	
+     	<resultMap type="GroupChannel" id="gcMap">
+     		<id property="id" column="id"/>
+     		<association property="group" javaType="Group">
+     			<id property="id" column="g_id"/>
+     			<result property="name" column="g_name"/>
+     			<result property="descr" column="descr" />
+     		</association>
+     		<association property="channel" javaType="Channel">
+     			<id property="id" column="c_id"/>
+	     		<result property="name" column="c_name"/>
+	     		<result property="customLink" column="custom_link"/>
+	     		<result property="customLinkUrl" column="custom_link_url"/>
+	     		<result property="type" column="type" />
+	     		<result property="isIndex" column="is_index"/>
+	     		<result property="isTopNav" column="is_top_nav"/>
+	     		<result property="recommend" column="recommend"/>
+	     		<result property="status" column="status"/>
+	     		<result property="orders" column="orders"/>
+	     		<association property="parent" javaType="Channel">
+	     			<id property="id" column="pid"/>
+	     			<result property="name" column="name"/>
+		     		<result property="customLink" column="custom_link"/>
+		     		<result property="customLinkUrl" column="custom_link_url"/>
+		     		<result property="type" column="type"/>
+		     		<result property="isIndex" column="is_index"/>
+		     		<result property="isTopNav" column="is_top_nav"/>
+		     		<result property="recommend" column="recommend"/>
+		     		<result property="status" column="status"/>
+		     		<result property="orders" column="orders"/>
+	     		</association>
+     		</association>
+     	</resultMap>
+     	
+     	<insert id="add" parameterType="Group" useGeneratedKeys="true" keyProperty="id">
+     		insert into t_group (name,descr) values (#{name}, #{descr})
+     	</insert>
+     	<update id="update" parameterType="Group">
+     		update t_group set name=#{name}, descr=#{descr} where id=#{id}
+     	</update>
+     	<delete id="delete" parameterType="int">
+     		delete from t_group where id=#{id}
+     	</delete>
+     	<select id="load" parameterType="int" resultMap="groupMap">
+     		select id,name,descr from t_group where id=#{id}
+     	</select>
+     	<select id="list" resultMap="groupMap">
+     		select id,name,descr from t_group
+     	</select>
+     	<select id="find" parameterType="map" resultMap="groupMap">
+     		select id,name,descr from t_group g where 1=1
+     		<if test="sort!=null">
+     			order by ${sort}
+     			<if test="order!=null">
+     				${order}
+     			</if>
+     		</if>
+     		limit #{pageOffset},#{pageSize}
+     	</select>
+     	<select id="find_count" resultType="long">
+     		select count(*) from t_group
+     	</select>
+     	<select id="list_user_group" resultMap="groupMap" parameterType="map">
+     		SELECT g.* FROM t_user u,t_group g,t_user_group ug WHERE u.id=ug.u_id AND g.id=ug.g_id
+     		<if test="userId!=null">
+     			AND u.id = #{userId}
+     		</if>
+     	</select>
+     	<select id="list_user_roleIds" resultType="int" parameterType="map">
+     		SELECT g.id FROM t_user u,t_group g,t_user_group ug WHERE u.id=ug.u_id AND g.id=ug.g_id 
+     		<if test="userId!=null">
+     			AND u.id = #{userId}
+     		</if>
+     	</select>
+     	<delete id="delete_group_users" parameterType="int">
+     		DELETE FROM t_user_group WHERE g_id=#{groupId}
+     	</delete>
+     	<insert id="add_group_channel" parameterType="map" useGeneratedKeys="true" keyProperty="id">
+     		insert into t_group_channel (g_id, c_id) values (#{groupId}, #{channelId})
+     	</insert>
+     	<select id="load_group_channel" resultMap="gcMap" parameterType="map">
+     		SELECT gc.id, g.id g_id,g.name g_name,g.descr,
+			c.id c_id,c.name c_name, c.custom_link,c.custom_link_url,c.type,c.is_index,c.is_top_nav,c.recommend,c.status,c.orders,c.pid 
+			FROM t_group g,t_channel c,t_group_channel gc WHERE g.id=gc.g_id AND c.id=gc.c_id
+			<if test="groupId!=null">
+				AND gc.g_id=#{groupId}
+			</if>
+			<if test="channelId!=null">
+				AND gc.c_id=#{channelId}
+			</if>
+     	</select>
+     	<delete id="delete_group_channel" parameterType="map">
+     		DELETE FROM t_group_channel WHERE g_id=#{groupId} AND c_id=#{channelId}
+     	</delete>
+     	<delete id="clear_group_channel" parameterType="int">
+     		DELETE FROM t_group_channel WHERE g_id=#{gid}
+     	</delete>
+     	<select id="list_group_channel_ids" parameterType="int" resultType="int">
+     		SELECT gc.c_id FROM t_group_channel gc WHERE gc.g_id=#{gid}
+     	</select>
+     	<select id="generate_group_channel_tree" parameterType="int" resultType="ChannelTree">
+     		SELECT c.id, c.name, c.pid FROM t_group_channel gc, t_channel c WHERE gc.c_id=c.id AND gc.g_id=#{cid}
+     	</select>
+     	<select id="generate_user_channel_tree" parameterType="int" resultType="ChannelTree">
+     		SELECT DISTINCT c.id, c.name, c.pid FROM t_group_channel gc, t_channel c, t_user_group ug 
+     		WHERE gc.c_id=c.id AND gc.g_id=ug.g_id AND ug.u_id=#{uid}
+     	</select>
+     </mapper>
+ 
