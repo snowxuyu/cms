@@ -1,8 +1,5 @@
 package org.snow.cms.controller;
 
-import java.util.List;
-import javax.inject.Inject;
-import javax.servlet.http.HttpSession;
 import org.snow.cms.auth.AuthClass;
 import org.snow.cms.auth.AuthMethod;
 import org.snow.cms.dto.UserDto;
@@ -20,6 +17,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 @RequestMapping({"/admin/user"})
@@ -143,7 +144,7 @@ public class UserController
   @RequestMapping({"/listChannels/{uid}"})
   public String listChannels(@PathVariable int uid, Model model) {
     model.addAttribute(this.userService.load(uid));
-    List rs = this.userService.listUserRoles(uid);
+    List<Role> rs = this.userService.listUserRoles(uid);
     for (Role r : rs) {
       if (RoleType.ROLE_ADMIN == r.getRoleType())
         model.addAttribute("isAdmin", Integer.valueOf(1));

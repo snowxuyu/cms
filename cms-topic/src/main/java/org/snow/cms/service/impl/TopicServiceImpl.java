@@ -1,19 +1,34 @@
 /*     */ package org.snow.cms.service.impl;
 /*     */ 
-/*     */ import java.util.List;
-/*     */ import javax.inject.Inject;
 /*     */ import org.snow.cms.dao.IAttachmentDao;
-/*     */ import org.snow.cms.dao.IChannelDao;
-/*     */ import org.snow.cms.dao.ITopicDao;
-/*     */ import org.snow.cms.dao.IUserDao;
-/*     */ import org.snow.cms.model.Attachment;
-/*     */ import org.snow.cms.model.Channel;
-/*     */ import org.snow.cms.model.Topic;
-/*     */ import org.snow.cms.model.User;
-/*     */ import org.snow.cms.service.ITopicService;
-/*     */ import org.snow.cms.util.CmsException;
-/*     */ import org.snow.cms.util.Pager;
-/*     */ import org.springframework.stereotype.Service;
+import org.snow.cms.dao.IChannelDao;
+import org.snow.cms.dao.ITopicDao;
+import org.snow.cms.dao.IUserDao;
+import org.snow.cms.model.Attachment;
+import org.snow.cms.model.Channel;
+import org.snow.cms.model.Topic;
+import org.snow.cms.model.User;
+import org.snow.cms.service.ITopicService;
+import org.snow.cms.util.CmsException;
+import org.snow.cms.util.Pager;
+import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
+import java.util.List;
+
+/*     */
+/*     */
+/*     */
+/*     */
+/*     */
+/*     */
+/*     */
+/*     */
+/*     */
+/*     */
+/*     */
+/*     */
+/*     */
 /*     */ 
 /*     */ @Service("topicService")
 /*     */ public class TopicServiceImpl
@@ -66,7 +81,7 @@
 /*     */ 
 /*     */   public void delete(int tid)
 /*     */   {
-/*  64 */     List atts = this.attachmentDao.listByTopic(tid);
+/*  64 */     List<Attachment> atts = this.attachmentDao.listByTopic(tid);
 /*  65 */     this.attachmentDao.deleteByTopic(tid);
 /*  66 */     this.topicDao.delete(Topic.class, Integer.valueOf(tid));
 /*     */ 

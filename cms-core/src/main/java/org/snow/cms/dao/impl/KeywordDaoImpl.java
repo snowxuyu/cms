@@ -1,18 +1,13 @@
 package org.snow.cms.dao.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.inject.Inject;
 import org.apache.ibatis.session.SqlSession;
 import org.snow.cms.dao.IKeywordDao;
 import org.snow.cms.model.KeyWord;
 import org.snow.cms.util.Pager;
-import org.snow.cms.util.PinyinUtil;
 import org.springframework.stereotype.Repository;
+
+import javax.inject.Inject;
+import java.util.*;
 
 @Repository("keywordDao")
 public class KeywordDaoImpl extends BaseDaoImpl<KeyWord> implements IKeywordDao {
@@ -45,8 +40,8 @@ public class KeywordDaoImpl extends BaseDaoImpl<KeyWord> implements IKeywordDao 
 		if (null == k) {
 			k = new KeyWord();
 			k.setName(name);
-			k.setNameFullPy(PinyinUtil.str2Pinyin(name, null));
-			k.setNameShortPy(PinyinUtil.strFirst2Pinyin(name));
+			//k.setNameFullPy(PinyinUtil.str2Pinyin(name, null));
+			//k.setNameShortPy(PinyinUtil.strFirst2Pinyin(name));
 			k.setTimes(1);
 			add(k);
 		} else {

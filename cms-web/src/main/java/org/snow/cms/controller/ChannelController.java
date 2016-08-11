@@ -1,8 +1,5 @@
 package org.snow.cms.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.inject.Inject;
 import org.snow.cms.auth.AuthClass;
 import org.snow.cms.dto.AjaxObj;
 import org.snow.cms.dto.TreeDto;
@@ -15,6 +12,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping({"/admin/channel"})
@@ -137,7 +138,7 @@ public class ChannelController
     if (pid == null) {
       list.add(0, new TreeDto(0, "网站系统栏目", 1));
     }
-    List cts = this.channelService.generateTreeByParent(pid);
+    List<ChannelTree> cts = this.channelService.generateTreeByParent(pid);
     for (ChannelTree ct : cts) {
       list.add(new TreeDto(ct.getId().intValue(), ct.getName(), 1));
     }

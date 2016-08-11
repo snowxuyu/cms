@@ -1,11 +1,11 @@
 package org.snow.cms.web;
 
+import org.snow.cms.model.BaseInfo;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
-
-import org.konghao.cms.model.BaseInfo;
 
 public class BaseInfoUtil {
 	private static BaseInfoUtil biu;
