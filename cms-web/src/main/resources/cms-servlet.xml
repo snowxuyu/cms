@@ -22,9 +22,9 @@
 	
 	<!-- 扫描包 ,包名一定要写全-->
 	<context:component-scan base-package="org.snow.cms.controller" />
-  	<dwr:controller id="dwrController" debug="false"/>
+ <!-- 	<dwr:controller id="dwrController" debug="false"/>
 	<dwr:annotation-config id="dwrAnnotationConfig" />
-  	<dwr:annotation-scan base-package="org.snow.cms.dwr" scanDataTransferObject="true"/>
+  	<dwr:annotation-scan base-package="org.snow.cms.dwr" scanDataTransferObject="true"/>-->
 	
 	<!-- 设置JSP跳转路径 、前缀和后缀 -->
 	<bean
@@ -34,14 +34,14 @@
 	</bean>
 	
 	<!-- 配置dwr -->
-	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+	<!--<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 	  <property value="true" name="alwaysUseFullPath"></property> 
 	  <property name="mappings">
 	    <props> 
 	      <prop key="/dwr/**/*">dwrController</prop>
 	    </props>
 	 </property> 
-	</bean>
+	</bean>-->
 	<!-- 设置json格式 -->
 	<bean id="contentNegotiationManager"
 		class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
